@@ -8,6 +8,14 @@ pygame.init()
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
+# text function
+def text_creator(text_value, x, y, font_size):
+    font = pygame.font.Font('assets/PressStart2P.ttf', font_size)
+    text = font.render(text_value, True, (255, 255, 255))
+    text_rect = text.get_rect()
+    text_rect.center = (x, y)
+    Screen.blit(text, text_rect)
+
 
 # player object
 class Player:
@@ -48,6 +56,11 @@ class Player:
     def render(self, screen: pygame.surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
+    def restart_player(self):
+        self.score = 0
+        self.rect.x = 50
+        self.rect.y = 300
+
 # bot object
 class Bot:
     # bot stats
@@ -56,7 +69,7 @@ class Bot:
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x, y)
 
-        self.score = 1
+        self.score = 0
 
         self.bot_SPEED = 5
 
@@ -82,6 +95,11 @@ class Bot:
     # function to draw the bot paddle
     def render(self, screen: pygame.surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def restart_bot(self):
+        self.score = 0
+        self.rect.x = 1180
+        self.rect.y = 300
 
 # ball object
 class Ball:
@@ -159,7 +177,7 @@ class Ball:
             self.dy *= -1
             pygame.mixer.Sound('assets/bounce.wav').play()
 
-        # setting the score 
+        # setting the score
         elif self.rect.right >= WINDOW_WIDTH or self.rect.left <= 0:
             pygame.mixer.Sound('assets/258020__kodack__arcade-bleep-sound.wav').play()
             if self.rect.right >= WINDOW_WIDTH:
@@ -178,6 +196,11 @@ class Ball:
         self.rect.x += self.dx * self.SPEED
         self.is_colliding_with_limits()
         self.is_colliding_with_paddle()
+
+    def restart_ball(self):
+        self.rect.x = 640
+        self.rect.y = 360
+        self.SPEED = 5
 
     # function to draw the ball
     def render(self, screen: pygame.surface):
@@ -199,16 +222,10 @@ bot = Bot(1180, 300)
 # score max
 SCORE_MAX = 1
 
-# text function
-def text_creator(text_value, x, y, font_size):
-    font = pygame.font.Font('assets/PressStart2P.ttf', font_size)
-    text = font.render(text_value, True, (255, 255, 255))
-    text_rect = text.get_rect()
-    text_rect.center = (x, y)
-    Screen.blit(text, text_rect)
-
-
 is_run = True
+
+count_for_restart = 10
+time_count = 0
 
 # screen loop
 while is_run:
@@ -228,6 +245,10 @@ while is_run:
                 player.up = True
             elif event.key == K_DOWN:
                 player.down = True
+            elif event.key == K_u:
+                player.restart_player()
+                bot.restart_bot()
+                ball.restart_ball()
 
             # setting the player power shot key
             elif event.key == K_x:
@@ -260,11 +281,20 @@ while is_run:
     else:
         Screen.fill((0, 0, 0))
         text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
-        text_creator('Press U to restart game... ', 550, 600, 30)
+        time_count += 1
+        if time_count == 60:
+            count_for_restart -= 1
+            time_count = 0
+            if count_for_restart == 0:
+                is_run = False
+        text_creator(f'Press U to restart game...{count_for_restart}', 550, 600, 30)
         if player.score == SCORE_MAX:
+
             # drawing the victory text
             text_creator('YOU WIN!!!', 630, 310, 50)
+
         elif bot.score == SCORE_MAX:
+
             # drawing the lose text
             text_creator('YOU LOSE :(', 630, 300, 50)
 

@@ -19,7 +19,7 @@ def text_creator(text_value, x, y, font_size):
 
 # player object
 class Player:
-    
+
     # function for player dimensions
     def __init__(self, x, y):
         self.image = pygame.image.load("assets/player.png")
@@ -65,7 +65,7 @@ class Player:
 
 # bot object
 class Bot:
-    
+
     # bot stats
     def __init__(self, x, y):
         self.image = pygame.image.load("assets/player.png")
@@ -107,7 +107,7 @@ class Bot:
 
 # ball object
 class Ball:
-    
+
     # Ball structure function
     def __init__(self, x, y):
         # dimensions
@@ -251,12 +251,15 @@ while is_run:
                 player.up = True
             elif event.key == K_DOWN:
                 player.down = True
-           
+
             # Verification for restart key
-            elif event.key == K_u:
-                player.restart_player()
-                bot.restart_bot()
-                ball.restart_ball()
+            elif player.score == SCORE_MAX or bot.score == SCORE_MAX:
+                # setting a restart key
+                if event.key == K_u:
+                    player.restart_player()
+                    bot.restart_bot()
+                    ball.restart_ball()
+                    count_for_restart = 10
 
             # setting the player power shot key
             elif event.key == K_x:
@@ -289,21 +292,22 @@ while is_run:
     else:
         Screen.fill((0, 0, 0))
         text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
-        
+
         # setting a time for the countdown
         time_count += 1
-        
+
         # setting a condition for the countdown
         if time_count == 60:
             count_for_restart -= 1
             time_count = 0
-            
+
+
             # setting a condition for close the game
             if count_for_restart == 0:
                 is_run = False
-                
+
         text_creator(f'Press U to restart game...{count_for_restart}', 550, 600, 30)
-        
+
         if player.score == SCORE_MAX:
 
             # drawing the victory text

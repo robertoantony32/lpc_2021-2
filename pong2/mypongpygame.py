@@ -19,6 +19,7 @@ def text_creator(text_value, x, y, font_size):
 
 # player object
 class Player:
+    
     # function for player dimensions
     def __init__(self, x, y):
         self.image = pygame.image.load("assets/player.png")
@@ -56,6 +57,7 @@ class Player:
     def render(self, screen: pygame.surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
+    # function for restart game
     def restart_player(self):
         self.score = 0
         self.rect.x = 50
@@ -63,6 +65,7 @@ class Player:
 
 # bot object
 class Bot:
+    
     # bot stats
     def __init__(self, x, y):
         self.image = pygame.image.load("assets/player.png")
@@ -96,6 +99,7 @@ class Bot:
     def render(self, screen: pygame.surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
+    # function for restart game
     def restart_bot(self):
         self.score = 0
         self.rect.x = 1180
@@ -103,6 +107,7 @@ class Bot:
 
 # ball object
 class Ball:
+    
     # Ball structure function
     def __init__(self, x, y):
         # dimensions
@@ -197,6 +202,7 @@ class Ball:
         self.is_colliding_with_limits()
         self.is_colliding_with_paddle()
 
+    # function for restart game
     def restart_ball(self):
         self.rect.x = 640
         self.rect.y = 360
@@ -245,6 +251,8 @@ while is_run:
                 player.up = True
             elif event.key == K_DOWN:
                 player.down = True
+           
+            # Verification for restart key
             elif event.key == K_u:
                 player.restart_player()
                 bot.restart_bot()
@@ -281,13 +289,21 @@ while is_run:
     else:
         Screen.fill((0, 0, 0))
         text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
+        
+        # setting a time for the countdown
         time_count += 1
+        
+        # setting a condition for the countdown
         if time_count == 60:
             count_for_restart -= 1
             time_count = 0
+            
+            # setting a condition for close the game
             if count_for_restart == 0:
                 is_run = False
+                
         text_creator(f'Press U to restart game...{count_for_restart}', 550, 600, 30)
+        
         if player.score == SCORE_MAX:
 
             # drawing the victory text

@@ -159,24 +159,17 @@ class Ball:
             self.dy *= -1
             pygame.mixer.Sound('assets/bounce.wav').play()
 
-        # setting the player score
-        elif self.rect.right >= WINDOW_WIDTH:
+        # setting the score 
+        elif self.rect.right >= WINDOW_WIDTH or self.rect.left <= 0:
             pygame.mixer.Sound('assets/258020__kodack__arcade-bleep-sound.wav').play()
+            if self.rect.right >= WINDOW_WIDTH:
+                player.score += 1
+            elif self.rect.left <= 0:
+                bot.score += 1
             self.rect.x = 640
             self.rect.y = 360
             self.dx *= -1
             self.SPEED = 5
-            player.score += 1
-            self.dy = choice([1, -1])
-
-        # setting the bot score
-        elif self.rect.left <= 0:
-            pygame.mixer.Sound('assets/258020__kodack__arcade-bleep-sound.wav').play()
-            self.rect.x = 640
-            self.rect.y = 360
-            self.dx *= -1
-            self.SPEED = 5
-            bot.score += 1
             self.dy = choice([1, -1])
 
     # function that calls the other functions previously programmed

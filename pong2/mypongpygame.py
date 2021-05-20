@@ -215,10 +215,17 @@ victory_text = victory_font .render('VICTORY', True, (255, 255, 255), (0, 0, 0))
 victory_text_rect = score_text.get_rect()
 victory_text_rect.center = (450, 350)
 
+# lose text
+lose_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
+lose_text = victory_font .render('YOU lose :(', True, (255, 255, 255), (0, 0, 0))
+lose_text_rect = score_text.get_rect()
+lose_text_rect.center = (300, 360)
+
 is_run = True
 
 # screen loop
 while is_run:
+    
     # fps
     clock.tick(60)
 
@@ -270,9 +277,15 @@ while is_run:
         Screen.blit(score_text, score_text_rect)
 
     else:
-        # drawing victory
-        Screen.fill((0, 0, 0))
-        Screen.blit(score_text, score_text_rect)
-        Screen.blit(victory_text, victory_text_rect)
+        if player.score == 1:
+            # drawing the victory text
+            Screen.fill((0, 0, 0))
+            Screen.blit(score_text, score_text_rect)
+            Screen.blit(victory_text, victory_text_rect)
+        elif bot.score == 1:
+            # drawing the lose text
+            Screen.fill((0, 0, 0))
+            Screen.blit(score_text, score_text_rect)
+            Screen.blit(lose_text, lose_text_rect)
 
     pygame.display.flip()

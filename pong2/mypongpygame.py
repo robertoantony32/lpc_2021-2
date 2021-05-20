@@ -21,6 +21,9 @@ class Player:
         self.up = False
         self.down = False
 
+        # setting an attribute for powershot
+        self.powerShot_k = False
+
         self.score = 00
 
     # function for the movement of the player
@@ -54,6 +57,7 @@ class Bot:
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x, y)
 
+        # setting a static speed for bot
         self.bot_SPEED = 5
 
         self.score = 00
@@ -110,14 +114,19 @@ class Ball:
             # reaction of the ball when it touches the bottom of the paddle 1
             if player.rect.bottom >= self.rect.top > (player.rect.centery + 20):
                 self.dy = 1
-
+                if player.powerShot_k:
+                    self.SPEED = 20
             # reaction of the ball when it touches the top of the paddle 1
             elif player.rect.top <= self.rect.bottom < (player.rect.centery - 20):
                 self.dy = -1
+                if player.powerShot_k:
+                    self.SPEED = 20
 
             # reaction of the ball when it touches the middle of the paddle 1
             elif (player.rect.centery + 20) >= self.rect.centery > (player.rect.centery - 20):
                 self.dy = 0
+                if player.powerShot_k:
+                    self.SPEED = 20
 
         # colliding with paddle 2 verification
         elif self.rect.colliderect(bot.rect) and self.dx > 0:
@@ -129,14 +138,20 @@ class Ball:
             # reaction of the ball when it touches the bottom of the paddle 2
             if bot.rect.bottom >= self.rect.top > (bot.rect.centery - 20):
                 self.dy = 1
+                if self.SPEED > 5:
+                    self.SPEED = 5
 
             # reaction of the ball when it touches the top of the paddle 2
             elif bot.rect.top <= self.rect.bottom < (bot.rect.centery - 20):
                 self.dy = -1
+                if self.SPEED > 5:
+                    self.SPEED = 5
 
             # reaction of the ball when it touches the middle of the paddle 2
             elif (bot.rect.centery + 20) >= self.rect.centery > (bot.rect.centery - 20):
                 self.dy = 0
+                if self.SPEED > 5:
+                    self.SPEED = 5
 
     # check the collision of the with boundaries of the screen
     def is_colliding_with_limits(self):
@@ -150,6 +165,7 @@ class Ball:
             self.rect.x = 640
             self.rect.y = 360
             self.dx *= -1
+            self.SPEED = 5
             player.score += 1
             self.dy = choice([1, -1])
 
@@ -159,6 +175,7 @@ class Ball:
             self.rect.x = 640
             self.rect.y = 360
             self.dx *= -1
+            self.SPEED = 5
             bot.score += 1
             self.dy = choice([1, -1])
 
@@ -213,22 +230,35 @@ while is_run:
 
         # checking for when the key is pressed
         elif event.type == KEYDOWN:
+            
             # setting the player movement
             if event.key == K_UP:
                 player.up = True
             elif event.key == K_DOWN:
                 player.down = True
+
+            # setting the player power shot key
+            elif event.key == K_x:
+                player.powerShot_k = True
+
         # checking when the key is released
         elif event.type == KEYUP:
+            
             # setting the player movement
             if event.key == K_UP:
                 player.up = False
             elif event.key == K_DOWN:
                 player.down = False
 
+            # setting the player power shot key
+            elif event.key == K_x:
+                player.powerShot_k = False
+
     # update the score
     score_text = score_font.render(str(player.score) + "x" + str(bot.score),
                                    True, (255, 255, 255))
+    
+    # condition for end game
     if player.score < 1 and bot.score < 1:
         player.update()
         ball.update()

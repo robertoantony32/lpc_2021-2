@@ -8,6 +8,7 @@ pygame.init()
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
+
 # text function
 def text_creator(text_value, x, y, font_size):
     font = pygame.font.Font('assets/PressStart2P.ttf', font_size)
@@ -19,7 +20,6 @@ def text_creator(text_value, x, y, font_size):
 
 # player object
 class Player:
-
     # function for player dimensions
     def __init__(self, x, y):
         self.image = pygame.image.load("assets/player.png")
@@ -29,9 +29,7 @@ class Player:
         # movement of the player
         self.up = False
         self.down = False
-
         self.score = 0
-
         self.powerShot_k = False
 
     # function for the movement of the player
@@ -57,23 +55,21 @@ class Player:
     def render(self, screen: pygame.surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-    # function for restart game
+    # function for restarting the game
     def restart_player(self):
         self.score = 0
         self.rect.x = 50
         self.rect.y = 300
 
+
 # bot object
 class Bot:
-
     # bot stats
     def __init__(self, x, y):
         self.image = pygame.image.load("assets/player.png")
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x, y)
-
         self.score = 0
-
         self.bot_SPEED = 5
 
     # bot movement
@@ -99,16 +95,17 @@ class Bot:
     def render(self, screen: pygame.surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-    # function for restart game
+    # function for restarting the game
     def restart_bot(self):
         self.score = 0
         self.rect.x = 1180
         self.rect.y = 300
 
+
 # ball object
 class Ball:
 
-    # Ball structure function
+    # ball structure function
     def __init__(self, x, y):
         # dimensions
         self.width = 20
@@ -120,7 +117,6 @@ class Ball:
 
         # speed of the ball
         self.SPEED = 5
-
         self.rect = pygame.Rect(x, y, 20, 20)
 
     #  colliding function
@@ -143,7 +139,6 @@ class Ball:
                 self.dy = -1
                 if player.powerShot_k:
                     self.SPEED = 20
-
 
             # reaction of the ball when it touches the middle of the paddle 1
             elif (player.rect.centery + 20) >= self.rect.centery > (player.rect.centery - 20):
@@ -176,7 +171,7 @@ class Ball:
                 if self.SPEED > 5:
                     self.SPEED = 5
 
-    # check the collision of the with boundaries of the screen
+    # check the collision of the ball with boundaries of the screen
     def is_colliding_with_limits(self):
         if self.rect.top >= WINDOW_HEIGHT or self.rect.bottom <= 0:
             self.dy *= -1
@@ -202,7 +197,7 @@ class Ball:
         self.is_colliding_with_limits()
         self.is_colliding_with_paddle()
 
-    # function for restart game
+    # function for restarting the game
     def restart_ball(self):
         self.rect.x = 640
         self.rect.y = 360
@@ -228,13 +223,13 @@ bot = Bot(1180, 300)
 # score max
 SCORE_MAX = 1
 
-is_run = True
+is_running = True
 
 count_for_restart = 10
 time_count = 0
 
 # screen loop
-while is_run:
+while is_running:
     # fps
     clock.tick(60)
 
@@ -242,7 +237,7 @@ while is_run:
     for event in pygame.event.get():
         # defining a way out of the game
         if event.type == QUIT:
-            is_run = False
+            is_running = False
 
         # checking for when the key is pressed
         elif event.type == KEYDOWN:
@@ -287,11 +282,11 @@ while is_run:
         bot.render(Screen)
 
         # update the score
-        text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
+        text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
 
     else:
         Screen.fill((0, 0, 0))
-        text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
+        text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
 
         # setting a time for the countdown
         time_count += 1
@@ -301,20 +296,17 @@ while is_run:
             count_for_restart -= 1
             time_count = 0
 
-
-            # setting a condition for close the game
+            # setting a condition for closing the game
             if count_for_restart == 0:
-                is_run = False
+                is_running = False
 
-        text_creator(f'Press U to restart game...{count_for_restart}', 550, 600, 30)
+        text_creator(f'Press U to restart the game... {count_for_restart}', 550, 600, 30)
 
         if player.score == SCORE_MAX:
-
             # drawing the victory text
             text_creator('YOU WIN!!!', 630, 310, 50)
 
         elif bot.score == SCORE_MAX:
-
             # drawing the lose text
             text_creator('YOU LOSE :(', 630, 300, 50)
 

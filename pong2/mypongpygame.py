@@ -54,11 +54,16 @@ class Bot:
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x, y)
 
+        self.bot_SPEED = 5
+
         self.score = 00
 
     # bot movement
     def bot_movement(self):
-        self.rect.y = ball.rect.y
+        if self.rect.top < ball.rect.y:
+            self.rect.top += self.bot_SPEED
+        if self.rect.bottom > ball.rect.y and self.rect.top > ball.rect.y:
+            self.rect.bottom -= self.bot_SPEED
 
     # bot colliding with limits
     def is_colliding_with_limits(self):

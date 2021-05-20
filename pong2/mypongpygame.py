@@ -21,10 +21,9 @@ class Player:
         self.up = False
         self.down = False
 
-        # setting an attribute for powershot
-        self.powerShot_k = False
+        self.score = 0
 
-        self.score = 00
+        self.powerShot_k = False
 
     # function for the movement of the player
     def movement(self):
@@ -57,10 +56,9 @@ class Bot:
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x, y)
 
-        # setting a static speed for bot
-        self.bot_SPEED = 5
+        self.score = 1
 
-        self.score = 00
+        self.bot_SPEED = 5
 
     # bot movement
     def bot_movement(self):
@@ -116,11 +114,13 @@ class Ball:
                 self.dy = 1
                 if player.powerShot_k:
                     self.SPEED = 20
+
             # reaction of the ball when it touches the top of the paddle 1
             elif player.rect.top <= self.rect.bottom < (player.rect.centery - 20):
                 self.dy = -1
                 if player.powerShot_k:
                     self.SPEED = 20
+
 
             # reaction of the ball when it touches the middle of the paddle 1
             elif (player.rect.centery + 20) >= self.rect.centery > (player.rect.centery - 20):
@@ -136,19 +136,19 @@ class Ball:
             pygame.mixer.Sound('assets/bounce.wav').play()
 
             # reaction of the ball when it touches the bottom of the paddle 2
-            if bot.rect.bottom >= self.rect.top > (bot.rect.centery - 20):
+            if bot.rect.bottom >= self.rect.top > (bot.rect.centery - 15):
                 self.dy = 1
                 if self.SPEED > 5:
                     self.SPEED = 5
 
             # reaction of the ball when it touches the top of the paddle 2
-            elif bot.rect.top <= self.rect.bottom < (bot.rect.centery - 20):
+            elif bot.rect.top <= self.rect.bottom < (bot.rect.centery - 15):
                 self.dy = -1
                 if self.SPEED > 5:
                     self.SPEED = 5
 
             # reaction of the ball when it touches the middle of the paddle 2
-            elif (bot.rect.centery + 20) >= self.rect.centery > (bot.rect.centery - 20):
+            elif (bot.rect.centery + 15) >= self.rect.centery > (bot.rect.centery - 15):
                 self.dy = 0
                 if self.SPEED > 5:
                     self.SPEED = 5
@@ -203,29 +203,22 @@ player = Player(50, 300)
 ball = Ball(640, 360)
 bot = Bot(1180, 300)
 
-# score text
-score_font = pygame.font.Font('assets/PressStart2P.ttf', 44)
-score_text = score_font.render('00 x 00', True, (255, 255, 255))
-score_text_rect = score_text.get_rect()
-score_text_rect.center = (680, 50)
+# score max
+SCORE_MAX = 1
 
-# victory text
-victory_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
-victory_text = victory_font .render('VICTORY', True, (255, 255, 255), (0, 0, 0))
-victory_text_rect = score_text.get_rect()
-victory_text_rect.center = (450, 350)
+# text function
+def text_creator(text_value, x, y, font_size):
+    font = pygame.font.Font('assets/PressStart2P.ttf', font_size)
+    text = font.render(text_value, True, (255, 255, 255))
+    text_rect = text.get_rect()
+    text_rect.center = (x, y)
+    Screen.blit(text, text_rect)
 
-# lose text
-lose_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
-lose_text = victory_font .render('YOU lose :(', True, (255, 255, 255), (0, 0, 0))
-lose_text_rect = score_text.get_rect()
-lose_text_rect.center = (300, 360)
 
 is_run = True
 
 # screen loop
 while is_run:
-    
     # fps
     clock.tick(60)
 
@@ -237,7 +230,6 @@ while is_run:
 
         # checking for when the key is pressed
         elif event.type == KEYDOWN:
-            
             # setting the player movement
             if event.key == K_UP:
                 player.up = True
@@ -250,23 +242,17 @@ while is_run:
 
         # checking when the key is released
         elif event.type == KEYUP:
-            
             # setting the player movement
             if event.key == K_UP:
                 player.up = False
             elif event.key == K_DOWN:
                 player.down = False
 
-            # setting the player power shot key
             elif event.key == K_x:
                 player.powerShot_k = False
 
-    # update the score
-    score_text = score_font.render(str(player.score) + "x" + str(bot.score),
-                                   True, (255, 255, 255))
-    
-    # condition for end game
-    if player.score < 1 and bot.score < 1:
+    # win condition verification
+    if player.score < SCORE_MAX and bot.score < SCORE_MAX:
         player.update()
         ball.update()
         bot.update()
@@ -274,18 +260,19 @@ while is_run:
         player.render(Screen)
         ball.render(Screen)
         bot.render(Screen)
-        Screen.blit(score_text, score_text_rect)
+
+        # update the score
+        text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
 
     else:
-        if player.score == 1:
+        Screen.fill((0, 0, 0))
+        text_creator(f'{player.score}x{bot.score}', 630, 50, 50)
+        text_creator('Press U to restart game... ', 550, 600, 30)
+        if player.score == SCORE_MAX:
             # drawing the victory text
-            Screen.fill((0, 0, 0))
-            Screen.blit(score_text, score_text_rect)
-            Screen.blit(victory_text, victory_text_rect)
-        elif bot.score == 1:
+            text_creator('YOU WIN!!!', 630, 310, 50)
+        elif bot.score == SCORE_MAX:
             # drawing the lose text
-            Screen.fill((0, 0, 0))
-            Screen.blit(score_text, score_text_rect)
-            Screen.blit(lose_text, lose_text_rect)
+            text_creator('YOU LOSE :(', 630, 300, 50)
 
     pygame.display.flip()

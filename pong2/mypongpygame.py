@@ -41,7 +41,7 @@ class Player:
         # setting a cooldown for special power
         self.special_power_k = False
         self.special_power_frame = 0
-        self.special_power_cooldown = 120
+        self.special_power_cooldown = 200
         self.special_power_on = True
 
     # function for the movement of the player
@@ -84,6 +84,7 @@ class Player:
     # function for restarting the game
     def restart_player(self):
         self.score = 0
+        self.special_power_on = True
         self.rect.x = 50
         self.rect.y = 300
 
@@ -365,6 +366,12 @@ while is_running:
 
                 # setting a condition for closing the game
                 if count_for_restart == 0:
+                   
+                    # Restarting the stats of all obejcts
+                    player.restart_player()
+                    bot.restart_bot()
+                    ball.restart_ball()
+                    count_for_restart = 10
                     start_key = False
 
             text_creator(f'Press U to restart the game... {count_for_restart}',

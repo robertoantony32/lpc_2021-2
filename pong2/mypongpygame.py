@@ -36,7 +36,7 @@ class Player:
         # movement of the player
         self.up = False
         self.down = False
-        self.score = 3
+        self.score = 0
 
         # setting a cooldown for special power
         self.special_power_k = False
@@ -260,11 +260,14 @@ start_key = False
 count_for_restart = 10
 fps_count = 0
 
+# movement start text var
 start_text = text_creator('Press SPACE to start the game!!', 630, 580, 30)
+start_text_dy = 1
 
+# movement restart text var
 restart_text = text_creator(f'Press U to restart the game... {count_for_restart}', 630, 600, 30)
+restart_text_dy = 1
 
-text_dy = 1
 
 # screen loop
 while is_running:
@@ -327,11 +330,11 @@ while is_running:
     text_creator('Press SPACE to start the game!!', 630, start_text.y, 30)
 
     # movement for start game text
-    start_text.y += text_dy
-    if start_text.y >= 580 and text_dy > 0:
-        text_dy *= -1
-    elif start_text.y <= 550 and text_dy < 0:
-        text_dy *= -1
+    start_text.y += start_text_dy
+    if start_text.y >= 580 and start_text_dy > 0:
+        start_text_dy *= -1
+    elif start_text.y <= 550 and start_text_dy < 0:
+        start_text_dy *= -1
 
     if start_key:
 
@@ -366,13 +369,13 @@ while is_running:
 
             text_creator(f'Press U to restart the game... {count_for_restart}',
                          630, restart_text.y, 30)
-            
+
             # movement of the restart text
-            restart_text.y += text_dy
-            if restart_text.y >= 650 and text_dy > 0:
-                text_dy *= -1
-            elif restart_text.y <= 570 and text_dy < 0:
-                text_dy *= -1
+            restart_text.y += restart_text_dy
+            if restart_text.y >= 615 and restart_text_dy > 0:
+                restart_text_dy *= -1
+            elif restart_text.y <= 590 and restart_text_dy < 0:
+                restart_text_dy *= -1
 
             if player.score == SCORE_MAX:
 

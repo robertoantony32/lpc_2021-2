@@ -107,9 +107,6 @@ class Ball:
 
     # ball structure function
     def __init__(self, x, y):
-        # dimensions
-        self.width = 20
-        self.height = 20
 
         # ball direction
         self.dy = 1
@@ -154,19 +151,19 @@ class Ball:
             pygame.mixer.Sound('assets/bounce.wav').play()
 
             # reaction of the ball when it touches the bottom of the paddle 2
-            if bot.rect.bottom >= self.rect.top > (bot.rect.centery - 15):
+            if bot.rect.bottom >= self.rect.top > (bot.rect.centery - 20):
                 self.dy = 1
                 if self.SPEED > 5:
                     self.SPEED = 5
 
             # reaction of the ball when it touches the top of the paddle 2
-            elif bot.rect.top <= self.rect.bottom < (bot.rect.centery - 15):
+            elif bot.rect.top <= self.rect.bottom < (bot.rect.centery - 20):
                 self.dy = -1
                 if self.SPEED > 5:
                     self.SPEED = 5
 
             # reaction of the ball when it touches the middle of the paddle 2
-            elif (bot.rect.centery + 15) >= self.rect.centery > (bot.rect.centery - 15):
+            elif (bot.rect.centery + 20) >= self.rect.centery > (bot.rect.centery - 20):
                 self.dy = 0
                 if self.SPEED > 5:
                     self.SPEED = 5
@@ -221,9 +218,12 @@ ball = Ball(640, 360)
 bot = Bot(1180, 300)
 
 # score max
-SCORE_MAX = 1
+SCORE_MAX = 3
 
 is_running = True
+
+# start Key value
+start_key = False
 
 count_for_restart = 10
 time_count = 0
@@ -235,20 +235,27 @@ while is_running:
 
     # verification to pick up interactions with the keyboard or mouse
     for event in pygame.event.get():
+
         # defining a way out of the game
         if event.type == QUIT:
             is_running = False
 
         # checking for when the key is pressed
         elif event.type == KEYDOWN:
+
             # setting the player movement
             if event.key == K_UP:
                 player.up = True
             elif event.key == K_DOWN:
                 player.down = True
 
+            # setting the start key
+            elif event.key == K_SPACE:
+                start_key = True
+
             # Verification for restart key
             elif player.score == SCORE_MAX or bot.score == SCORE_MAX:
+
                 # setting a restart key
                 if event.key == K_u:
                     player.restart_player()
@@ -271,43 +278,53 @@ while is_running:
             elif event.key == K_x:
                 player.powerShot_k = False
 
-    # win condition verification
-    if player.score < SCORE_MAX and bot.score < SCORE_MAX:
-        player.update()
-        ball.update()
-        bot.update()
-        Screen.fill((0, 0, 0))
-        player.render(Screen)
-        ball.render(Screen)
-        bot.render(Screen)
+    # Menu text
+    Screen.fill((0, 0, 0))
+    text_creator('PONG!', 640, 100, 70)
+    text_creator('Press UP to go up.', 630, 310, 20)
+    text_creator('Press DOWN to go down.', 630, 340, 20)
+    text_creator('hold X to do a powershot.', 630, 370, 20)
+    text_creator('Press SPACE to start the game!!', 630, 580, 30)
 
-        # update the score
-        text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
+    if start_key:
 
-    else:
-        Screen.fill((0, 0, 0))
-        text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
+        # win condition verification
+        if player.score < SCORE_MAX and bot.score < SCORE_MAX:
+            player.update()
+            ball.update()
+            bot.update()
+            Screen.fill((0, 0, 0))
+            player.render(Screen)
+            ball.render(Screen)
+            bot.render(Screen)
 
-        # setting a time for the countdown
-        time_count += 1
+            # update the score
+            text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
 
-        # setting a condition for the countdown
-        if time_count == 60:
-            count_for_restart -= 1
-            time_count = 0
+        else:
+            Screen.fill((0, 0, 0))
+            text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
 
-            # setting a condition for closing the game
-            if count_for_restart == 0:
-                is_running = False
+            # setting a time for the countdown
+            time_count += 1
 
-        text_creator(f'Press U to restart the game... {count_for_restart}', 550, 600, 30)
+            # setting a condition for the countdown
+            if time_count == 60:
+                count_for_restart -= 1
+                time_count = 0
 
-        if player.score == SCORE_MAX:
-            # drawing the victory text
-            text_creator('YOU WIN!!!', 630, 310, 50)
+                # setting a condition for closing the game
+                if count_for_restart == 0:
+                    start_key = False
 
-        elif bot.score == SCORE_MAX:
-            # drawing the lose text
-            text_creator('YOU LOSE :(', 630, 300, 50)
+            text_creator(f'Press U to restart the game... {count_for_restart}', 550, 600, 30)
+
+            if player.score == SCORE_MAX:
+                # drawing the victory text
+                text_creator('YOU WIN!!!', 630, 310, 50)
+
+            elif bot.score == SCORE_MAX:
+                # drawing the lose text
+                text_creator('YOU LOSE.', 630, 300, 50)
 
     pygame.display.flip()

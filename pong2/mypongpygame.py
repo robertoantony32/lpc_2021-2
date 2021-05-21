@@ -22,7 +22,14 @@ def text_creator(text_value, x, y, font_size):
 class Player:
     # function for player dimensions
     def __init__(self, x, y):
-        self.image = pygame.image.load("assets/player.png")
+        # setting the stats of the sprites
+        self.sprites = []
+        for number_sprite in range(6):
+            self.sprites.append(pygame.image.load(f'sprites/special_power{number_sprite}.png'))
+
+        self.current = 0
+        self.image = self.sprites[self.current]
+
         self.rect = self.image.get_rect()
         self.rect = self.rect.move(x, y)
 
@@ -30,7 +37,12 @@ class Player:
         self.up = False
         self.down = False
         self.score = 0
-        self.powerShot_k = False
+
+        # setting a cooldown for special power
+        self.special_power_k = False
+        self.special_power_frame = 0
+        self.special_power_cooldown = 120
+        self.special_power_on = True
 
     # function for the movement of the player
     def movement(self):
@@ -46,14 +58,28 @@ class Player:
         elif self.rect.top <= 0:
             self.rect.y = 0
 
+
+    def special_power_animate(self):
+        if self.special_power_k and self.special_power_on:
+            self.current += 0.2
+            if self.current >= len(self.sprites):
+                self.current = 5
+        else:
+            self.current = 0
+
     # function that calls the other functions previously programmed
     def update(self):
+        self.special_power_frame += 1
+        if self.special_power_frame == self.special_power_cooldown:
+            self.special_power_on = True
+
+        self.special_power_animate()
         self.movement()
         self.is_colliding_with_limits()
 
     # function for drawing the player
     def render(self, screen: pygame.surface):
-        screen.blit(self.image, (self.rect.x, self.rect.y))
+        screen.blit(self.sprites[int(self.current)], (self.rect.x, self.rect.y))
 
     # function for restarting the game
     def restart_player(self):
@@ -123,8 +149,16 @@ class Ball:
             self.dx *= -1
 
             # power_shot verification
-            if player.powerShot_k:
+            if player.special_power_k and player.current >= 5 and player.special_power_on:
+
+                # reset of the special power cooldown
+                player.special_power_frame = 0
+                player.special_power_on = False
+                
+                # ball boost
                 self.SPEED = 20
+                player.current = 0
+
 
             # setting the bounce sound
             pygame.mixer.Sound('assets/bounce.wav').play()
@@ -228,6 +262,7 @@ fps_count = 0
 
 # screen loop
 while is_running:
+
     # fps
     clock.tick(60)
 
@@ -263,10 +298,11 @@ while is_running:
 
             # setting the player power shot key
             elif event.key == K_x:
-                player.powerShot_k = True
+                player.special_power_k = True
 
         # checking when the key is released
         elif event.type == KEYUP:
+
             # setting the player movement
             if event.key == K_UP:
                 player.up = False
@@ -274,15 +310,14 @@ while is_running:
                 player.down = False
 
             elif event.key == K_x:
-                player.powerShot_k = False
+                player.special_power_k = False
 
     # Menu text
-
     Screen.fill((0, 0, 0))
     text_creator('PONG!', 640, 100, 70)
     text_creator('Hold UP to go up.', 630, 310, 20)
     text_creator('Hold DOWN to go down.', 630, 340, 20)
-    text_creator('Hold X to do a powershot.', 630, 370, 20)
+    text_creator('Hold X to do a special power.', 630, 370, 20)
     text_creator('Press SPACE to start the game!!', 630, 580, 30)
 
     if start_key:
@@ -319,6 +354,7 @@ while is_running:
             text_creator(f'Press U to restart the game... {count_for_restart}', 630, 600, 30)
 
             if player.score == SCORE_MAX:
+
                 # drawing the victory text
                 text_creator('YOU WIN!!!', 650, 340, 50)
 

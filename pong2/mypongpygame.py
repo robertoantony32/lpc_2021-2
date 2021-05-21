@@ -122,26 +122,24 @@ class Ball:
         if self.rect.colliderect(player.rect) and self.dx < 0:
             self.dx *= -1
 
+            # power_shot verification
+            if player.powerShot_k:
+                self.SPEED = 20
+
             # setting the bounce sound
             pygame.mixer.Sound('assets/bounce.wav').play()
 
             # reaction of the ball when it touches the bottom of the paddle 1
             if player.rect.bottom >= self.rect.top > (player.rect.centery + 20):
                 self.dy = 1
-                if player.powerShot_k:
-                    self.SPEED = 20
 
             # reaction of the ball when it touches the top of the paddle 1
             elif player.rect.top <= self.rect.bottom < (player.rect.centery - 20):
                 self.dy = -1
-                if player.powerShot_k:
-                    self.SPEED = 20
 
             # reaction of the ball when it touches the middle of the paddle 1
             elif (player.rect.centery + 20) >= self.rect.centery > (player.rect.centery - 20):
                 self.dy = 0
-                if player.powerShot_k:
-                    self.SPEED = 20
 
         # colliding with paddle 2 verification
         elif self.rect.colliderect(bot.rect) and self.dx > 0:
@@ -317,11 +315,11 @@ while is_running:
                 if count_for_restart == 0:
                     start_key = False
 
-            text_creator(f'Press U to restart the game... {count_for_restart}', 550, 600, 30)
+            text_creator(f'Press U to restart the game... {count_for_restart}', 630, 600, 30)
 
             if player.score == SCORE_MAX:
                 # drawing the victory text
-                text_creator('YOU WIN!!!', 630, 310, 50)
+                text_creator('YOU WIN!!!', 650, 340, 50)
 
             elif bot.score == SCORE_MAX:
                 # drawing the lose text

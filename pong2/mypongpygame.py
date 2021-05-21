@@ -16,7 +16,7 @@ def text_creator(text_value, x, y, font_size):
     text_rect = text.get_rect()
     text_rect.center = (x, y)
     Screen.blit(text, text_rect)
-
+    return text_rect
 
 # player object
 class Player:
@@ -36,7 +36,7 @@ class Player:
         # movement of the player
         self.up = False
         self.down = False
-        self.score = 0
+        self.score = 3
 
         # setting a cooldown for special power
         self.special_power_k = False
@@ -154,7 +154,7 @@ class Ball:
                 # reset of the special power cooldown
                 player.special_power_frame = 0
                 player.special_power_on = False
-                
+
                 # ball boost
                 self.SPEED = 20
                 player.current = 0
@@ -260,6 +260,12 @@ start_key = False
 count_for_restart = 10
 fps_count = 0
 
+start_text = text_creator('Press SPACE to start the game!!', 630, 580, 30)
+
+restart_text = text_creator(f'Press U to restart the game... {count_for_restart}', 630, 600, 30)
+
+text_dy = 1
+
 # screen loop
 while is_running:
 
@@ -318,7 +324,14 @@ while is_running:
     text_creator('Hold UP to go up.', 630, 310, 20)
     text_creator('Hold DOWN to go down.', 630, 340, 20)
     text_creator('Hold X to do a special power.', 630, 370, 20)
-    text_creator('Press SPACE to start the game!!', 630, 580, 30)
+    text_creator('Press SPACE to start the game!!', 630, start_text.y, 30)
+
+    # movement for start game text
+    start_text.y += text_dy
+    if start_text.y >= 580 and text_dy > 0:
+        text_dy *= -1
+    elif start_text.y <= 550 and text_dy < 0:
+        text_dy *= -1
 
     if start_key:
 
@@ -351,7 +364,15 @@ while is_running:
                 if count_for_restart == 0:
                     start_key = False
 
-            text_creator(f'Press U to restart the game... {count_for_restart}', 630, 600, 30)
+            text_creator(f'Press U to restart the game... {count_for_restart}',
+                         630, restart_text.y, 30)
+            
+            # movement of the restart text
+            restart_text.y += text_dy
+            if restart_text.y >= 650 and text_dy > 0:
+                text_dy *= -1
+            elif restart_text.y <= 570 and text_dy < 0:
+                text_dy *= -1
 
             if player.score == SCORE_MAX:
 

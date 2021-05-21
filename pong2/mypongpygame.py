@@ -224,7 +224,7 @@ is_running = True
 start_key = False
 
 count_for_restart = 10
-time_count = 0
+fps_count = 0
 
 # screen loop
 while is_running:
@@ -277,11 +277,12 @@ while is_running:
                 player.powerShot_k = False
 
     # Menu text
+
     Screen.fill((0, 0, 0))
     text_creator('PONG!', 640, 100, 70)
-    text_creator('Press UP to go up.', 630, 310, 20)
-    text_creator('Press DOWN to go down.', 630, 340, 20)
-    text_creator('hold X to do a powershot.', 630, 370, 20)
+    text_creator('Hold UP to go up.', 630, 310, 20)
+    text_creator('Hold DOWN to go down.', 630, 340, 20)
+    text_creator('Hold X to do a powershot.', 630, 370, 20)
     text_creator('Press SPACE to start the game!!', 630, 580, 30)
 
     if start_key:
@@ -304,12 +305,12 @@ while is_running:
             text_creator(f'{player.score} | {bot.score}', 630, 50, 50)
 
             # setting a time for the countdown
-            time_count += 1
+            fps_count += 1
 
             # setting a condition for the countdown
-            if time_count == 60:
+            if fps_count == 60:
                 count_for_restart -= 1
-                time_count = 0
+                fps_count = 0
 
                 # setting a condition for closing the game
                 if count_for_restart == 0:

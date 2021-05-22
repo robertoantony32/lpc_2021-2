@@ -18,6 +18,7 @@ def text_creator(text_value, x, y, font_size):
     Screen.blit(text, text_rect)
     return text_rect
 
+
 # player object
 class Player:
     # function for player dimensions
@@ -57,7 +58,6 @@ class Player:
             self.rect.y = 570
         elif self.rect.top <= 0:
             self.rect.y = 0
-
 
     def special_power_animate(self):
         if self.special_power_k and self.special_power_on:
@@ -134,11 +134,9 @@ class Ball:
 
     # ball structure function
     def __init__(self, x, y):
-
         # ball direction
         self.dy = 1
         self.dx = 1
-
         # speed of the ball
         self.SPEED = 5
         self.rect = pygame.Rect(x, y, 20, 20)
@@ -151,7 +149,6 @@ class Ball:
 
             # power_shot verification
             if player.special_power_k and player.current >= 5 and player.special_power_on:
-
                 # reset of the special power cooldown
                 player.special_power_frame = 0
                 player.special_power_on = False
@@ -160,18 +157,15 @@ class Ball:
                 self.SPEED = 20
                 player.current = 0
 
-
             # setting the bounce sound
             pygame.mixer.Sound('assets/bounce.wav').play()
 
             # reaction of the ball when it touches the bottom of the paddle 1
             if player.rect.bottom >= self.rect.top > (player.rect.centery + 20):
                 self.dy = 1
-
             # reaction of the ball when it touches the top of the paddle 1
             elif player.rect.top <= self.rect.bottom < (player.rect.centery - 20):
                 self.dy = -1
-
             # reaction of the ball when it touches the middle of the paddle 1
             elif (player.rect.centery + 20) >= self.rect.centery > (player.rect.centery - 20):
                 self.dy = 0
@@ -269,10 +263,8 @@ start_text_dy = 1
 restart_text = text_creator(f'Press U to restart the game... {count_for_restart}', 630, 600, 30)
 restart_text_dy = 1
 
-
 # screen loop
 while is_running:
-
     # fps
     clock.tick(60)
 
@@ -366,8 +358,7 @@ while is_running:
 
                 # setting a condition for closing the game
                 if count_for_restart == 0:
-                   
-                    # Restarting the stats of all obejcts
+                    # Restarting the stats of all objects
                     player.restart_player()
                     bot.restart_bot()
                     ball.restart_ball()

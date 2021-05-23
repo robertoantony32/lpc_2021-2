@@ -5,8 +5,6 @@ from pygame.locals import *
 
 from utils.dimensions import *
 
-pygame.init()
-
 
 # text function
 def text_creator(text_value, x, y, font_size):
@@ -233,6 +231,8 @@ class Ball:
 
 if __name__ == '__main__':
     # setting the screen
+    pygame.init()
+
     Screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("MyPong - Pygame by Roberto.")
 

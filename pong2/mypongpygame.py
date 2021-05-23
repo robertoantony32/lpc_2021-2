@@ -3,11 +3,9 @@ from random import choice
 import pygame
 from pygame.locals import *
 
-pygame.init()
+from utils.dimensions import *
 
-# screen dimensions
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+pygame.init()
 
 
 # text function

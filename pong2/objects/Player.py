@@ -23,10 +23,10 @@ class Player:
         self.down = False
         self.score = 0
 
-        # setting a cooldown for special power
+        # setting a cool down for special power
         self.special_power_k = False
         self.special_power_frame = 0
-        self.special_power_cooldown = 200
+        self.special_power_cool_down = 200
         self.special_power_on = True
 
     # function for the movement of the player
@@ -54,7 +54,7 @@ class Player:
     # function that calls the other functions previously programmed
     def update(self):
         self.special_power_frame += 1
-        if self.special_power_frame == self.special_power_cooldown:
+        if self.special_power_frame == self.special_power_cool_down:
             self.special_power_on = True
 
         self.special_power_animate()
